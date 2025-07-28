@@ -693,13 +693,13 @@ function LoginPage() {
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/login/page.tsx",
                                                 lineNumber: 147,
-                                                columnNumber: 17
+                                                columnNumber: 19
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/login/page.tsx",
                                         lineNumber: 145,
-                                        columnNumber: 15
+                                        columnNumber: 17
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/login/page.tsx",
