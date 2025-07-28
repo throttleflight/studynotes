@@ -57,7 +57,7 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }) {
       try {
         if (token && session.user) {
-          // Extend session.user type safely
+          // Extend session.user type safely without using any
           (session.user as { id?: string }).id = token.id as string
         }
         return session

@@ -206,6 +206,7 @@ const authOptions = {
         async session ({ session, token }) {
             try {
                 if (token && session.user) {
+                    // Extend session.user type safely without using any
                     session.user.id = token.id;
                 }
                 return session;
