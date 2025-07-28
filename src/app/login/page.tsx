@@ -142,12 +142,12 @@ export default function LoginPage() {
             </div>
 
             <div className="mt-6 text-center">
-              <p className="text-sm text-slate-600 dark:text-slate-400">
-                Don't have an account?{' '}
-                <Link href="/" className="font-medium text-slate-900 dark:text-white hover:underline">
-                  Learn more about StudyNotes
-                </Link>
-              </p>
+                <p className="text-sm text-slate-600 dark:text-slate-400">
+                  Don&apos;t have an account?{' '}
+                  <Link href="/" className="font-medium text-slate-900 dark:text-white hover:underline">
+                    Learn more about StudyNotes
+                  </Link>
+                </p>
             </div>
           </CardContent>
         </Card>

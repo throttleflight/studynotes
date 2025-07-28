@@ -32,11 +32,36 @@ interface NotesResponse {
 }
 
 export default function NotesPage() {
-  const { data: session, status } = useSession()
+  const { status } = useSession()
   const router = useRouter()
   const [subjects, setSubjects] = useState<Subject[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+
+  const fetchNotes = async () => {
+    try {
+      setLoading(true)
+      setError('')
+      
+      const response = await fetch('/api/notes')
+      
+      if (!response.ok) {
+        if (response.status === 401) {
+          router.push('/login')
+          return
+        }
+        throw new Error('Failed to fetch notes')
+      }
+
+      const data: NotesResponse = await response.json()
+      setSubjects(data.subjects)
+    } catch (error) {
+      console.error('Error fetching notes:', error)
+      setError('Failed to load notes. Please try again.')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -47,9 +72,8 @@ export default function NotesPage() {
     if (status === 'authenticated') {
       fetchNotes()
     }
-  }, [status, router])
+  }, [status, router, fetchNotes])
 
-  const fetchNotes = async () => {
     try {
       setLoading(true)
       setError('')
