@@ -19,7 +19,7 @@ export const authOptions: NextAuthOptions = {
               id: '1',
               email: 'demo@studynotes.com',
               name: 'Demo User',
-            } as const
+            }
           }
           
           // You can add more demo users here
@@ -28,7 +28,7 @@ export const authOptions: NextAuthOptions = {
               id: '2',
               email: 'student@example.com',
               name: 'Student User',
-            } as const
+            }
           }
           
           return null

@@ -72,7 +72,7 @@ export default function NotesPage() {
     if (status === 'authenticated') {
       fetchNotes()
     }
-  }, [status, router])
+  }, [status, router, fetchNotes])
 
     try {
       setLoading(true)
