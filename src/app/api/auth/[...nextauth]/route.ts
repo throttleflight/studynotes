@@ -57,9 +57,12 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }) {
       try {
         if (token && session.user) {
-          // Define a proper interface for session.user to avoid any
-          interface UserWithId {
+          // Define a proper type for session.user to avoid any
+          type UserWithId = {
             id?: string
+            name?: string | null
+            email?: string | null
+            image?: string | null
           }
           (session.user as UserWithId).id = token.id as string
         }

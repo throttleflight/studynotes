@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -38,7 +38,7 @@ export default function NotesPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
-  const fetchNotes = async () => {
+  const fetchNotes = useCallback(async () => {
     try {
       setLoading(true)
       setError('')
@@ -61,7 +61,7 @@ export default function NotesPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [router])
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -73,30 +73,6 @@ export default function NotesPage() {
       fetchNotes()
     }
   }, [status, router, fetchNotes])
-
-    try {
-      setLoading(true)
-      setError('')
-      
-      const response = await fetch('/api/notes')
-      
-      if (!response.ok) {
-        if (response.status === 401) {
-          router.push('/login')
-          return
-        }
-        throw new Error('Failed to fetch notes')
-      }
-
-      const data: NotesResponse = await response.json()
-      setSubjects(data.subjects)
-    } catch (error) {
-      console.error('Error fetching notes:', error)
-      setError('Failed to load notes. Please try again.')
-    } finally {
-      setLoading(false)
-    }
-  }
 
   if (status === 'loading' || loading) {
     return (
@@ -284,4 +260,3 @@ export default function NotesPage() {
       </main>
     </div>
   )
-}
