@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { signIn, getSession } from 'next-auth/react'
+import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
@@ -27,18 +27,16 @@ export default function LoginPage() {
         email,
         password,
         redirect: false,
+        callbackUrl: '/notes',
       })
 
       if (result?.error) {
         setError('Invalid email or password. Please try again.')
+      } else if (result?.ok) {
+        router.push(result.url ?? '/notes')
+        router.refresh()
       } else {
-        // Check if session was created successfully
-        const session = await getSession()
-        if (session) {
-          router.push('/notes')
-        } else {
-          setError('Login failed. Please try again.')
-        }
+        setError('Login failed. Please try again.')
       }
     } catch (error) {
       console.error('Login error:', error)
@@ -81,7 +79,7 @@ export default function LoginPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-6" noValidate>
               <div className="space-y-2">
                 <Label htmlFor="email" className="text-sm font-medium">
                   Email Address
@@ -113,7 +111,10 @@ export default function LoginPage() {
               </div>
 
               {error && (
-                <Alert className="border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-900/20">
+                <Alert
+                  className="border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-900/20"
+                  aria-live="polite"
+                >
                   <AlertDescription className="text-red-800 dark:text-red-200">
                     {error}
                   </AlertDescription>
@@ -142,12 +143,12 @@ export default function LoginPage() {
             </div>
 
             <div className="mt-6 text-center">
-                <p className="text-sm text-slate-600 dark:text-slate-400">
-                  Don&apos;t have an account?{' '}
-                  <Link href="/" className="font-medium text-slate-900 dark:text-white hover:underline">
-                    Learn more about StudyNotes
-                  </Link>
-                </p>
+              <p className="text-sm text-slate-600 dark:text-slate-400">
+                Don’t have an account?{' '}
+                <Link href="/" className="font-medium text-slate-900 dark:text-white hover:underline">
+                  Learn more about StudyNotes
+                </Link>
+              </p>
             </div>
           </CardContent>
         </Card>

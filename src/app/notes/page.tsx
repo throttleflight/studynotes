@@ -42,9 +42,9 @@ export default function NotesPage() {
     try {
       setLoading(true)
       setError('')
-      
+
       const response = await fetch('/api/notes')
-      
+
       if (!response.ok) {
         if (response.status === 401) {
           router.push('/login')
@@ -55,8 +55,8 @@ export default function NotesPage() {
 
       const data: NotesResponse = await response.json()
       setSubjects(data.subjects)
-    } catch (error) {
-      console.error('Error fetching notes:', error)
+    } catch (err) {
+      console.error('Error fetching notes:', err)
       setError('Failed to load notes. Please try again.')
     } finally {
       setLoading(false)
@@ -66,15 +66,16 @@ export default function NotesPage() {
   useEffect(() => {
     if (status === 'unauthenticated') {
       router.push('/login')
-      return
-    }
-
-    if (status === 'authenticated') {
+    } else if (status === 'authenticated') {
       fetchNotes()
     }
-  }, [status, router, fetchNotes])
+  }, [status, fetchNotes, router])
 
-  if (status === 'loading' || loading) {
+  if (status === 'loading') {
+    return null // Let loading UI handle it
+  }
+
+  if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
         <NavBar />
@@ -106,16 +107,11 @@ export default function NotesPage() {
     )
   }
 
-  if (status === 'unauthenticated') {
-    return null // Will redirect to login
-  }
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
       <NavBar />
-      
+
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
         <div className="mb-12">
           <h1 className="text-4xl font-bold text-slate-900 dark:text-white mb-4">
             Study Notes Collection
@@ -126,7 +122,6 @@ export default function NotesPage() {
           </p>
         </div>
 
-        {/* Error State */}
         {error && (
           <Alert className="mb-8 border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-900/20">
             <AlertDescription className="text-red-800 dark:text-red-200">
@@ -143,7 +138,6 @@ export default function NotesPage() {
           </Alert>
         )}
 
-        {/* Subjects Grid */}
         {subjects.length > 0 ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {subjects.map((subject) => (
@@ -162,9 +156,8 @@ export default function NotesPage() {
                       {subject.description}
                     </CardDescription>
                   </CardHeader>
-                  
+
                   <CardContent className="pt-0">
-                    {/* Recent Notes Preview */}
                     <div className="space-y-3">
                       <h4 className="font-medium text-sm text-slate-700 dark:text-slate-300 mb-3">
                         Recent Notes:
@@ -186,7 +179,7 @@ export default function NotesPage() {
                           </div>
                         </div>
                       ))}
-                      
+
                       {subject.noteCount > 2 && (
                         <p className="text-xs text-slate-500 dark:text-slate-400 italic">
                           +{subject.noteCount - 2} more notes available
@@ -204,18 +197,19 @@ export default function NotesPage() {
               </Link>
             ))}
           </div>
-        ) : !loading && !error && (
-          <div className="text-center py-16">
-            <h3 className="text-2xl font-semibold text-slate-900 dark:text-white mb-4">
-              No Notes Available
-            </h3>
-            <p className="text-slate-600 dark:text-slate-400 mb-8">
-              There are currently no study notes available. Check back later!
-            </p>
-          </div>
+        ) : (
+          !error && (
+            <div className="text-center py-16">
+              <h3 className="text-2xl font-semibold text-slate-900 dark:text-white mb-4">
+                No Notes Available
+              </h3>
+              <p className="text-slate-600 dark:text-slate-400 mb-8">
+                There are currently no study notes available. Check back later!
+              </p>
+            </div>
+          )
         )}
 
-        {/* Stats Section */}
         {subjects.length > 0 && (
           <div className="mt-16 bg-white/40 dark:bg-slate-800/40 backdrop-blur-sm rounded-2xl p-8">
             <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-6 text-center">
@@ -226,37 +220,19 @@ export default function NotesPage() {
                 <div className="text-3xl font-bold text-slate-900 dark:text-white mb-2">
                   {subjects.length}
                 </div>
-                <div className="text-sm text-slate-600 dark:text-slate-400">
-                  Subjects
-                </div>
+                <div className="text-sm text-slate-600 dark:text-slate-400">Subjects</div>
               </div>
               <div>
                 <div className="text-3xl font-bold text-slate-900 dark:text-white mb-2">
                   {subjects.reduce((total, subject) => total + subject.noteCount, 0)}
                 </div>
-                <div className="text-sm text-slate-600 dark:text-slate-400">
-                  Total Notes
-                </div>
+                <div className="text-sm text-slate-600 dark:text-slate-400">Total Notes</div>
               </div>
               <div>
                 <div className="text-3xl font-bold text-slate-900 dark:text-white mb-2">
                   {Math.round(subjects.reduce((total, subject) => total + subject.noteCount, 0) / subjects.length)}
                 </div>
-                <div className="text-sm text-slate-600 dark:text-slate-400">
-                  Avg per Subject
-                </div>
+                <div className="text-sm text-slate-600 dark:text-slate-400">Avg per Subject</div>
               </div>
               <div>
                 <div className="text-3xl font-bold text-slate-900 dark:text-white mb-2">
-                  {subjects.reduce((max, subject) => Math.max(max, subject.noteCount), 0)}
-                </div>
-                <div className="text-sm text-slate-600 dark:text-slate-400">
-                  Most Notes
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-      </main>
-    </div>
-  )
